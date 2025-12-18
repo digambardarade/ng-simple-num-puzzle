@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global page background matching the board's palette */
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	background:
+		linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0) 40%),
+		linear-gradient(135deg, #f6f2e9 0%, #efe8d9 100%);
+	background-attachment: fixed;
+}
+
+/* Theme overrides removed: body[data-theme] not used */

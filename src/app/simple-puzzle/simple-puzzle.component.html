@@ -1,0 +1,68 @@
+<div class="sp-container">
+  <!-- <h2>Simple Sliding Puzzle</h2> -->
+
+  <div
+    class="sp-board"
+    [class.solved]="isSolved()"
+    [ngStyle]="dimensionStyle"
+    aria-label="Simple sliding puzzle board"
+  >
+    <button
+      class="sp-tile"
+      *ngFor="let tile of tiles; let i = index"
+      [class.empty]="tile === 0"
+      [disabled]="tile === 0 || !canMove(i) || isSolved()"
+      (click)="move(i)"
+      [attr.aria-label]="tile === 0 ? 'Empty' : 'Tile ' + tile"
+    >
+      <span *ngIf="tile !== 0">{{ tile }}</span>
+    </button>
+
+    <!-- Solved overlay banner with backdrop inside the board -->
+    <div class="sp-overlay" *ngIf="isSolved()" aria-live="polite">
+      <div class="sp-overlay-card" role="dialog" aria-modal="true" aria-label="Puzzle solved">
+        <h3>🎉 Puzzle Solved!</h3>
+        <p>Solved in {{ moveCount }} moves, {{ formatTime(elapsedMs) }}.</p>
+        <button (click)="reset()" autofocus>Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sp-side">
+    <div class="sp-stats">
+      <div class="div">
+        <span
+          >Moves: <strong>{{ moveCount }}</strong></span
+        >
+      </div>
+      <div class="div">
+        <span
+          >Time: <strong class="mono">{{ formatTime(elapsedMs) }}</strong></span
+        >
+      </div>
+    </div>
+
+    <div class="sp-actions">
+      <button (click)="reset()">Shuffle</button>
+      <button
+        (click)="togglePause()"
+        [disabled]="startTime === null && !isRunning"
+      >
+        {{ pauseLabel }}
+      </button>
+      <button (click)="end()">End</button>
+    </div>
+
+    <div class="sp-size">
+      <select
+        aria-label="Board size"
+        [(ngModel)]="size"
+        (ngModelChange)="setSize($event)"
+      >
+        <option [value]="3">Board - 3×3</option>
+        <option [value]="4">Board - 4×4</option>
+        <option [value]="5">Board - 5×5</option>
+      </select>
+    </div>
+  </div>
+</div>
