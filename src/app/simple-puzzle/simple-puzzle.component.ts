@@ -134,10 +134,6 @@ export class SimplePuzzleComponent implements OnInit {
     return this.timerId !== null;
   }
 
-  isPaused(): boolean {
-    return this.hasStarted && !this.isRunning && !this.isSolved();
-  }
-
   private resumeTimer(): void {
     // Resume from paused state, keeping elapsed time continuity
     this.startTime = Date.now() - this.elapsedMs;
@@ -196,6 +192,11 @@ export class SimplePuzzleComponent implements OnInit {
     if (!this.hasStarted) return 'Start';
     if (this.isRunning) return 'Pause';
     return 'Resume';
+  }
+
+  // Paused when a game has started, timer is not running, not solved
+  isPaused(): boolean {
+    return this.hasStarted && !this.isRunning && this.startTime !== null && !this.isSolved();
   }
 
   formatTime(ms: number): string {
