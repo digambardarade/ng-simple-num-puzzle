@@ -11,7 +11,7 @@
       class="sp-tile"
       *ngFor="let tile of tiles; let i = index"
       [class.empty]="tile === 0"
-      [disabled]="tile === 0 || !canMove(i) || isSolved()"
+      [disabled]="tile === 0 || !canMove(i) || isSolved() || isPaused()"
       (click)="move(i)"
       [attr.aria-label]="tile === 0 ? 'Empty' : 'Tile ' + tile"
     >
@@ -24,6 +24,14 @@
         <h3>🎉 Puzzle Solved!</h3>
         <p>Solved in {{ moveCount }} moves, {{ formatTime(elapsedMs) }}.</p>
         <button (click)="reset()" autofocus>Play Again</button>
+      </div>
+    </div>
+
+    <div class="sp-overlay" *ngIf="isPaused()" aria-live="polite">
+      <div class="sp-overlay-card" role="dialog" aria-modal="true" aria-label="Game paused">
+        <h3>⏸️ Game Paused</h3>
+        <p>Resume to continue playing.</p>
+        <button (click)="toggleStartPauseResume()" autofocus>Resume</button>
       </div>
     </div>
   </div>
@@ -43,14 +51,21 @@
     </div>
 
     <div class="sp-actions">
-      <button (click)="reset()">Shuffle</button>
+      <!-- Toggle One: Shuffle before start, End after start -->
       <button
-        (click)="togglePause()"
-        [disabled]="startTime === null && !isRunning"
+        (click)="hasStarted ? end() : reset()"
+        [disabled]="hasStarted ? isSolved() : false"
       >
-        {{ pauseLabel }}
+        {{ hasStarted ? 'End' : 'Shuffle' }}
       </button>
-      <button (click)="end()">End</button>
+
+      <!-- Toggle Two: Start, Pause, Resume -->
+      <button
+        (click)="toggleStartPauseResume()"
+        [disabled]="isSolved()"
+      >
+        {{ startPauseLabel }}
+      </button>
     </div>
 
     <div class="sp-size">

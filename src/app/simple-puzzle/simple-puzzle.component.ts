@@ -12,6 +12,7 @@ export class SimplePuzzleComponent implements OnInit {
   startTime: number | null = null;
   elapsedMs = 0;
   timerId: any = null;
+  hasStarted = false;
 
   ngOnInit(): void {
     this.reset();
@@ -40,6 +41,7 @@ export class SimplePuzzleComponent implements OnInit {
     this.stopTimer();
     this.elapsedMs = 0;
     this.startTime = null;
+    this.hasStarted = false;
   }
 
   setSize(n: number): void {
@@ -96,6 +98,7 @@ export class SimplePuzzleComponent implements OnInit {
     if (this.tiles[index] === 0) return;
     if (!this.canMove(index)) return;
     if (this.startTime === null) this.startTimer();
+    this.hasStarted = true;
     const empty = this.emptyIndex;
     [this.tiles[index], this.tiles[empty]] = [this.tiles[empty], this.tiles[index]];
     this.moveCount++;
@@ -131,6 +134,10 @@ export class SimplePuzzleComponent implements OnInit {
     return this.timerId !== null;
   }
 
+  isPaused(): boolean {
+    return this.hasStarted && !this.isRunning && !this.isSolved();
+  }
+
   private resumeTimer(): void {
     // Resume from paused state, keeping elapsed time continuity
     this.startTime = Date.now() - this.elapsedMs;
@@ -160,6 +167,35 @@ export class SimplePuzzleComponent implements OnInit {
   end(): void {
     this.stopTimer();
     this.elapsedMs = 0;
+    this.hasStarted = false;
+  }
+
+  toggleStartPauseResume(): void {
+    // Start if never started
+    if (!this.hasStarted && !this.isSolved()) {
+      // Start occurs on first move; here we only enable running timer
+      // Set hasStarted true and start timer baseline
+      if (this.startTime === null) {
+        this.startTimer();
+      }
+      this.hasStarted = true;
+      return;
+    }
+    // If running -> pause
+    if (this.isRunning) {
+      this.stopTimer();
+      return;
+    }
+    // If paused and started -> resume
+    if (this.hasStarted && this.startTime !== null && !this.isSolved()) {
+      this.resumeTimer();
+    }
+  }
+
+  get startPauseLabel(): string {
+    if (!this.hasStarted) return 'Start';
+    if (this.isRunning) return 'Pause';
+    return 'Resume';
   }
 
   formatTime(ms: number): string {
