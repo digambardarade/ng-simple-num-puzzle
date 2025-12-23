@@ -99,6 +99,35 @@ h2 {
   max-width: 80%;
 }
 .sp-overlay-card button { margin-top: 4px; }
+.sp-overlay-card .resume-btn {
+  align-self: center;
+  width: auto;
+  min-width: 120px;
+  padding: 6px 12px;
+}
+
+/* Breathing effect for call-to-action buttons */
+.breathing {
+  will-change: transform, box-shadow;
+  animation: breathing-strong 1.9s ease-in-out infinite;
+}
+
+@keyframes breathing-strong {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow:
+      0 10px 22px rgba(0,0,0,0.20),
+      0 0 14px rgba(255, 193, 7, 0.35); /* warm glow */
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+}
 
 .sp-board.solved .sp-tile {
   opacity: 0.6;

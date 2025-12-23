@@ -161,37 +161,23 @@ export class SimplePuzzleComponent implements OnInit {
   }
 
   end(): void {
-    this.stopTimer();
-    this.elapsedMs = 0;
-    this.hasStarted = false;
+    // End should reset to a fresh game: zero moves, zero timer, new shuffle
+    this.reset();
   }
 
   toggleStartPauseResume(): void {
-    // Start if never started
-    if (!this.hasStarted && !this.isSolved()) {
-      // Start occurs on first move; here we only enable running timer
-      // Set hasStarted true and start timer baseline
-      if (this.startTime === null) {
-        this.startTimer();
-      }
-      this.hasStarted = true;
-      return;
-    }
-    // If running -> pause
+    // Remove start behavior: only Pause/Resume
     if (this.isRunning) {
       this.stopTimer();
       return;
     }
-    // If paused and started -> resume
     if (this.hasStarted && this.startTime !== null && !this.isSolved()) {
       this.resumeTimer();
     }
   }
 
-  get startPauseLabel(): string {
-    if (!this.hasStarted) return 'Start';
-    if (this.isRunning) return 'Pause';
-    return 'Resume';
+  get pauseResumeLabel(): string {
+    return this.isRunning ? 'Pause' : 'Resume';
   }
 
   // Paused when a game has started, timer is not running, not solved
